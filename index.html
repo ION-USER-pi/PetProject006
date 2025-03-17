@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Security Guardian</title>
+    <style>
+        :root {
+            --primary: #232F3E;
+            --secondary: #FF9900;
+            --danger: #D13212;
+            --success: #1E8E3E;
+            --light: #F8F9FA;
+            --dark: #343A40;
+            --text: #212529;
+            --bg-light: #F8F9FA;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg-light);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary);
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(35, 47, 62, 0.8), rgba(35, 47, 62, 0.8)), url("/api/placeholder/1200/600") center/cover;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            color: white;
+            margin-top: 60px;
+        }
+        
+        .hero-content {
+            max-width: 600px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        section {
+            padding: 4rem 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--dark);
+        }
+        
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-img {
+            height: 200px;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .step::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .cta {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+        }
+        
+        .cta h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .cta p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--secondary);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Mobile Navigation */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background-color: var(--primary);
+                flex-direction: column;
+                transition: transform 0.3s;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                padding: 1rem;
+            }
+            
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 1rem 0;
+                margin-left: 0;
+            }
+            
+            .hero {
+                height: 400px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Feature Icons */
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        /* Threat Level Indicators */
+        .threat-level {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .threat-high {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .threat-medium {
+            background-color: var(--secondary);
+            color: var(--primary);
+        }
+        
+        .threat-low {
+            background-color: var(--success);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">AWS<span>Security</span>Guardian</div>
+            <button class="menu-toggle">☰</button>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#threats">Threats</a></li>
+                    <li><a href="#solutions">Solutions</a></li>
+                    <li><a href="#guide">Guide</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <h1>Secure Your AWS Infrastructure</h1>
+            <p>Comprehensive cybersecurity strategies to protect your cloud assets from evolving threats</p>
+            <a href="#guide" class="btn">Get Started</a>
+        </div>
+    </section>
+
+    <section id="threats">
+        <div class="container">
+            <div class="section-header">
+                <h2>Common AWS Security Threats</h2>
+                <p>Understanding the risks is the first step toward protecting your infrastructure</p>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-img">🔐</div>
+                    <div class="card-content">
+                        <span class="threat-level threat-high">High Risk</span>
+                        <h3>Misconfigured IAM Policies</h3>
+                        <p>Overly permissive IAM policies can leave your resources vulnerable to unauthorized access, data breaches, and privilege escalation attacks.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🔍</div>
+                    <div class="card-content">
+                        <span class="threat-level threat-medium">Medium Risk</span>
+                        <h3>S3 Bucket Exposure</h3>
+                        <p>Improperly configured S3 buckets can expose sensitive data publicly, leading to data leaks and compliance violations.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🔒</div>
+                    <div class="card-content">
+                        <span class="threat-level threat-high">High Risk</span>
+                        <h3>API Key Mismanagement</h3>
+                        <p>Leaked or compromised API keys can grant attackers full access to your AWS environment, potentially leading to account takeover.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">⚠️</div>
+                    <div class="card-content">
+                        <span class="threat-level threat-medium">Medium Risk</span>
+                        <h3>Unpatched Vulnerabilities</h3>
+                        <p>Failing to update EC2 instances and other services can leave your infrastructure exposed to known vulnerabilities and exploits.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🔥</div>
+                    <div class="card-content">
+                        <span class="threat-level threat-low">Low Risk</span>
+                        <h3>Inadequate Logging</h3>
+                        <p>Without proper logging and monitoring, security incidents can go undetected, allowing attackers to maintain persistent access.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🚫</div>
+                    <div class="card-content">
+                        <span class="threat-level threat-high">High Risk</span>
+                        <h3>Insecure Network Configuration</h3>
+                        <p>Improperly configured VPCs, security groups, and NACLs can create network vulnerabilities that attackers can exploit.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solutions" style="background-color: #f0f5f9;">
+        <div class="container">
+            <div class="section-header">
+                <h2>AWS Security Solutions</h2>
+                <p>Leverage these AWS security services to protect your infrastructure</p>
+            </div>
+            <div class="cards">
+                <div class="card">
+                    <div class="card-img">🛡️</div>
+                    <div class="card-content">
+                        <h3>AWS GuardDuty</h3>
+                        <p>Threat detection service that continuously monitors for malicious activity and unauthorized behavior to protect your AWS accounts and workloads.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🔍</div>
+                    <div class="card-content">
+                        <h3>AWS Security Hub</h3>
+                        <p>Comprehensive view of your security alerts and compliance status across multiple AWS accounts.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🛑</div>
+                    <div class="card-content">
+                        <h3>AWS WAF</h3>
+                        <p>Web Application Firewall that protects your web applications from common web exploits and attacks.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🔐</div>
+                    <div class="card-content">
+                        <h3>AWS IAM</h3>
+                        <p>Securely manage access to AWS services and resources with fine-grained permissions.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">📊</div>
+                    <div class="card-content">
+                        <h3>AWS Config</h3>
+                        <p>Assess, audit, and evaluate the configurations of your AWS resources to ensure compliance.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img">🔍</div>
+                    <div class="card-content">
+                        <h3>Amazon Inspector</h3>
+                        <p>Automated security assessment service that helps improve the security and compliance of applications deployed on AWS.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="guide">
+        <div class="container">
+            <div class="section-header">
+                <h2>AWS Security Best Practices</h2>
+                <p>Follow these steps to secure your AWS infrastructure</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <h3>Implement Least Privilege Access</h3>
+                    <p>Grant only the permissions necessary for users and services to perform their tasks. Regularly review and rotate access keys and credentials.</p>
+                </div>
+                <div class="step">
+                    <h3>Enable Multi-Factor Authentication</h3>
+                    <p>Require MFA for all users, especially those with elevated privileges. Enable MFA deletion for S3 buckets containing sensitive data.</p>
+                </div>
+                <div class="step">
+                    <h3>Encrypt Data at Rest and in Transit</h3>
+                    <p>Use AWS KMS to manage encryption keys and enable encryption for EBS volumes, S3 buckets, RDS instances, and other data storage services.</p>
+                </div>
+                <div class="step">
+                    <h3>Implement Network Security Controls</h3>
+                    <p>Use security groups, NACLs, and VPCs to isolate resources and control traffic flow. Implement private subnets for sensitive workloads.</p>
+                </div>
+                <div class="step">
+                    <h3>Enable Comprehensive Logging and Monitoring</h3>
+                    <p>Configure CloudTrail, CloudWatch, and VPC Flow Logs to capture and analyze events across your AWS environment.</p>
+                </div>
+                <div class="step">
+                    <h3>Automate Security Testing and Remediation</h3>
+                    <p>Use AWS Security Hub and Config Rules to automate compliance checks and remediation actions for security issues.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="cta">
+        <div class="container">
+            <h2>Ready to Secure Your AWS Infrastructure?</h2>
+            <p>Contact our team of AWS security experts for a comprehensive security assessment and personalized recommendations.</p>
+            <a href="#" class="btn">Contact Us</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Security Assessments</a></li>
+                        <li><a href="#">Penetration Testing</a></li>
+                        <li><a href="#">Compliance Audits</a></li>
+                        <li><a href="#">Incident Response</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Whitepapers</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                        <li><a href="#">Webinars</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Our Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">GitHub</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 AWS Security Guardian. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        
+        // Close menu when clicking on a link
+        const navLinks = document.querySelectorAll('.nav-menu a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
